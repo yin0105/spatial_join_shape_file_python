@@ -13,7 +13,7 @@ with open('areanr_PC4.csv', 'r') as in_file_1:
 
             csv_file = csv.DictReader(in_file_2)
             for row in csv_file:
-                if row['H'] in areanr_dict and row['B'] in areanr_dict:
+                if row['H'] in areanr_dict or row['B'] in areanr_dict:
                     writer.writerow([row['tijd'], areanr_dict[row['H']], areanr_dict[row['B']], row['aantalpa'], row['aantalov'], row['aantalfts'], row['total']])
                 else:
                     if not row['H'] in areanr_dict: tmp_dict[row['H']] = ""

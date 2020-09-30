@@ -9,16 +9,47 @@ with open('shape_files/HBMatrix2019.csv', 'r') as in_file:
         pre_h = -1
         pre_b = -1
         aantalpa_sum = aantalov_sum = aantalfts_sum = 0
+        result_dict = {}
         for row in csv_file:
-            if row['H'] != pre_h or row['B'] != pre_b:
-                if pre_h != -1:
-                    writer.writerow([min_tijd, pre_h, pre_b, aantalpa_sum, aantalov_sum, aantalfts_sum])
-                    aantalpa_sum = aantalov_sum = aantalfts_sum = 0
-                    min_tijd = 10
-                aantalpa_sum += float(row['aantalpa'])
-                aantalov_sum += float(row['aantalov'])
-                aantalfts_sum += float(row['aantalfts'])
-                if int(row['tijd']) < min_tijd : min_tijd = int(row['tijd'])
-                pre_h = row['H']
-                pre_b = row['B']
+            # if row['H'] == '1' and row['B'] == '14': print("ok")
+            ok = False
+            if row['H'] in result_dict:
+                if row['B'] in result_dict[row['H']]:
+                    result_dict[row['H']][row['B']]['aantalpa'] = str(float(result_dict[row['H']][row['B']]['aantalpa']) + float(row['aantalpa']))
+                    result_dict[row['H']][row['B']]['aantalov'] = str(float(result_dict[row['H']][row['B']]['aantalov']) + float(row['aantalov']))
+                    result_dict[row['H']][row['B']]['aantalfts'] = str(float(result_dict[row['H']][row['B']]['aantalfts']) + float(row['aantalfts']))
+                    if row['tijd'] < result_dict[row['H']][row['B']]['tijd']: result_dict[row['H']][row['B']]['tijd'] = row['tijd']
+                    ok = True
+            
+            if not ok:
+                if not row['H'] in result_dict:
+                    result_dict[row['H']] = {}
+                if not row['B'] in result_dict[row['H']]:
+                    result_dict[row['H']][row['B']] = {}
+                result_dict[row['H']][row['B']]['tijd'] = row['tijd']
+                result_dict[row['H']][row['B']]['H'] = row['H']
+                result_dict[row['H']][row['B']]['B'] = row['B']
+                result_dict[row['H']][row['B']]['aantalpa'] = row['aantalpa']
+                result_dict[row['H']][row['B']]['aantalov'] = row['aantalov']
+                result_dict[row['H']][row['B']]['aantalfts'] = row['aantalfts']
+            
+            
+            # if row['H'] != pre_h or row['B'] != pre_b:
+            #     if pre_h != -1:
+            #         writer.writerow([min_tijd, pre_h, pre_b, aantalpa_sum, aantalov_sum, aantalfts_sum])
+            #         aantalpa_sum = aantalov_sum = aantalfts_sum = 0
+            #         min_tijd = 10
+            #     aantalpa_sum += float(row['aantalpa'])
+            #     aantalov_sum += float(row['aantalov'])
+            #     aantalfts_sum += float(row['aantalfts'])
+            #     if int(row['tijd']) < min_tijd : min_tijd = int(row['tijd'])
+            #     pre_h = row['H']
+            #     pre_b = row['B']
             # print(dict(row))
+
+        for aa in result_dict:
+            for bb in result_dict[aa]:
+                writer.writerow([result_dict[aa][bb]['tijd'], aa, bb, result_dict[aa][bb]['aantalpa'], result_dict[aa][bb]['aantalov'], result_dict[aa][bb]['aantalfts']])
+        
+        in_file.close()
+        out_file.close()
