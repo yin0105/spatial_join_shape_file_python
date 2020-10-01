@@ -33,20 +33,6 @@ with open('shape_files/HBMatrix2019.csv', 'r') as in_file:
                 result_dict[row['H']][row['B']]['aantalov'] = row['aantalov']
                 result_dict[row['H']][row['B']]['aantalfts'] = row['aantalfts']
             
-            
-            # if row['H'] != pre_h or row['B'] != pre_b:
-            #     if pre_h != -1:
-            #         writer.writerow([min_tijd, pre_h, pre_b, aantalpa_sum, aantalov_sum, aantalfts_sum])
-            #         aantalpa_sum = aantalov_sum = aantalfts_sum = 0
-            #         min_tijd = 10
-            #     aantalpa_sum += float(row['aantalpa'])
-            #     aantalov_sum += float(row['aantalov'])
-            #     aantalfts_sum += float(row['aantalfts'])
-            #     if int(row['tijd']) < min_tijd : min_tijd = int(row['tijd'])
-            #     pre_h = row['H']
-            #     pre_b = row['B']
-            # print(dict(row))
-
         for aa in result_dict:
             for bb in result_dict[aa]:
                 writer.writerow([result_dict[aa][bb]['tijd'], aa, bb, result_dict[aa][bb]['aantalpa'], result_dict[aa][bb]['aantalov'], result_dict[aa][bb]['aantalfts']])
